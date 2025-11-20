@@ -1,0 +1,47 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "automerge": false,
+  "docker": {
+    "enabled": true
+  },
+  "extends": [
+    "config:base"
+  ],
+  "golang": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "enabled": true,
+      "managers": [
+        "dockerfile"
+      ],
+      "matchFiles": [
+        "**/Dockerfile"
+      ]
+    },
+    {
+      "enabled": true,
+      "managers": [
+        "gomod"
+      ],
+      "matchFiles": [
+        "**/go.mod"
+      ]
+    },
+    {
+      "enabled": true,
+      "managers": [
+        "github-actions"
+      ],
+      "matchFiles": [
+        "**/.github/workflows/*.yml"
+      ]
+    }
+  ],
+  "pre-commit": {
+    "enabled": true
+  },
+  "rangeStrategy": "replace",
+  "timezone": "America/Los_Angeles"
+}

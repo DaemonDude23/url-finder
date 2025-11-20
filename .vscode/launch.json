@@ -1,0 +1,113 @@
+{
+    "configurations": [
+        {
+            "args": [
+                "--help"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "name": "Help",
+            "program": "${workspaceFolder}/src/",
+            "request": "launch",
+            "type": "go"
+        },
+        {
+            "args": [
+                "--version"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "name": "Version",
+            "program": "${workspaceFolder}/src/",
+            "request": "launch",
+            "type": "go"
+        },
+        {
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "mode": "test",
+            "name": "Tests",
+            "program": "${workspaceFolder}/src/",
+            "request": "launch",
+            "type": "go",
+        },
+        {
+            "args": [
+                "--log-level=DEBUG",
+                "--show-all=true",
+                "./examples/",
+                "--query-threads=50"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "name": "Local - Directory",
+            "program": "${workspaceFolder}/src/",
+            "request": "launch",
+            "type": "go"
+        },
+        {
+            "args": [
+                "--log-level=DEBUG",
+                "./examples/",
+                "--file-extensions=.txt"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "name": "Local - Text File (Should match)",
+            "program": "${workspaceFolder}/src/",
+            "request": "launch",
+            "type": "go"
+        },
+        {
+            "args": [
+                "--log-level=DEBUG",
+                "./examples/",
+                "--file-extensions=.md"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "name": "Local - Markdown Only (Should not match)",
+            "program": "${workspaceFolder}/src/",
+            "request": "launch",
+            "type": "go"
+        },
+        {
+            "args": [
+                "--log-level=DEBUG",
+                "--no-query=true",
+                "./examples/"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "name": "Local - No Query",
+            "program": "${workspaceFolder}/src/",
+            "request": "launch",
+            "type": "go"
+        },
+        {
+            "args": [
+                // "--show-all",
+                "--log-level=DEBUG",
+                "https://blog.andrewaadland.me"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "name": "Remote - URL",
+            "program": "${workspaceFolder}/src/",
+            "request": "launch",
+            "type": "go"
+        },
+        {
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/",
+            "host": "127.0.0.1",
+            "mode": "remote",
+            "name": "Docker - Debug in container",
+            "port": 40000,
+            "preLaunchTask": "docker-run",
+            "request": "attach",
+            "type": "go"
+        }
+    ],
+    "version": "0.2.0"
+}

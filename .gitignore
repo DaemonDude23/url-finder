@@ -1,0 +1,6 @@
+.go/
+.mypy_cache/
+*/.go/
+build/
+venv/
+**/.cache/

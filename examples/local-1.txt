@@ -1,0 +1,18 @@
+https://www.google.com
+
+Oh yeah ! https://yahoo.com
+Wooo yeah bla bla http://msn.com .
+uhoh http://jijgwijewjweojewfjewfew88.com
+
+yeah http://google.com
+
+Check this out: https://example.com/path?query=123&name=test
+Visit our site at http://www.example.org
+Secure site: https://secure.example.net
+FTP link: ftp://ftp.example.com/resource
+Mailto link: mailto:someone@example.com
+Another secure site: https://subdomain.example.co.uk/path/to/resource
+IP address URL: http://192.168.1.1
+Port number URL: http://example.com:8080
+Query parameters: https://example.com/search?q=regex+test
+Fragment identifier: https://example.com/page#section

@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "command": "docker build -f Dockerfile-dev -t url-finder .",
+      "label": "docker-build",
+      "problemMatcher": [],
+      "type": "shell"
+    },
+    {
+      "command": "docker run -p 40000:40000 --rm --name url-finder url-finder",
+      "dependsOn": "docker-build",
+      "isBackground": true,
+      "label": "docker-run",
+      "problemMatcher": [],
+      "type": "shell"
+    },
+    {
+      "command": "docker stop url-finder",
+      "label": "docker-stop",
+      "problemMatcher": [],
+      "type": "shell"
+    },
+  ],
+  "version": "2.0.0"
+}
