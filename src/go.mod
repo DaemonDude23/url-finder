@@ -3,7 +3,7 @@ module daemondude23/url-finder/m
 go 1.25.3
 
 require (
-	github.com/alexflint/go-arg v1.6.0
+	github.com/alexflint/go-arg v1.6.1
 	github.com/olekukonko/tablewriter v1.1.1
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/sirupsen/logrus v1.9.3
