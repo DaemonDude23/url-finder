@@ -6,7 +6,7 @@ require (
 	github.com/alexflint/go-arg v1.6.0
 	github.com/olekukonko/tablewriter v1.1.1
 	github.com/schollz/progressbar/v3 v3.18.0
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.10.2
 )
 
 require (
