@@ -1,4 +1,4 @@
-FROM docker.io/library/golang:1.25.4 AS builder
+FROM docker.io/library/golang:1.27.1 AS builder
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY ./src/ ./
 # Build the Go app
 RUN go build -o url-finder .
 
-FROM docker.io/library/golang:1.25.4
+FROM docker.io/library/golang:1.27.1
 
 WORKDIR /app
 
