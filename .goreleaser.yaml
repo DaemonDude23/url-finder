@@ -1,8 +1,11 @@
+version: 2
 builds:
   - binary: url-finder
     dir: ./src
     env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
     goarch:
       - amd64
       - arm64
@@ -11,8 +14,15 @@ builds:
       - linux
       - darwin
       - windows
+    ignore:
+      - goos: darwin
+        goarch: '386'
     id: url-finder
 checksum:
   name_template: checksums.txt
 release:
   draft: true
+  use_existing_draft: true
+  replace_existing_artifacts: true
+changelog:
+  use: github-native

@@ -9,9 +9,14 @@ import (
 )
 
 func processURL(target string) [][]string {
-	var results [][]string
 
-	resp, err := http.Get(target)
+	return processURLWithClient(target, &http.Client{Timeout: requestTimeout})
+}
+
+func processURLWithClient(target string, client *http.Client) [][]string {
+	var results [][]string
+	// #nosec G704 -- Fetching user-selected URLs is the purpose of this CLI.
+	resp, err := client.Get(target)
 	if err != nil {
 		log.Info("Error fetching URL:", err)
 		return results

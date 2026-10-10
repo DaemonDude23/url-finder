@@ -1,25 +1,23 @@
-FROM docker.io/library/golang:1.25.4 AS builder
-
-WORKDIR /app
-
-# Copy go mod and sum files
+# Builder stage
+FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.26.9@sha256:f1f0bcc2c524a3ced375fcb4d1ecb7aa371aa7070e112599aaca45cc02d0101b AS builder
+ARG TARGETOS
+ARG TARGETARCH
+ARG VERSION=dev
+WORKDIR /build
+# Copy go mod files and download dependencies
 COPY ./src/go.mod ./src/go.sum ./
-
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
-
-# Copy the source from the current directory to the Working Directory inside the container
+# Copy the rest of the source code
 COPY ./src/ ./
+# Build the url-finder binary with CGO disabled for a fully static binary
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-amd64} go build -ldflags="-s -w -X main.version=${VERSION}" -o url-finder .
 
-# Build the Go app
-RUN go build -o url-finder .
-
-FROM docker.io/library/golang:1.25.4
-
-WORKDIR /app
-
-# Copy the Pre-built binary file from the previous stage
-COPY --from=builder /app/url-finder /app
-
-# Command to run the executable
-CMD ["/app/url-finder"]
+# Final stage
+FROM scratch AS final
+# Copy the url-finder binary to a known location
+COPY --from=builder /build/url-finder /usr/local/bin/url-finder
+# Provide CA certificates for TLS
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+# By default, set the binary as the entry point in case you want to run it
+USER 65532:65532
+ENTRYPOINT ["/usr/local/bin/url-finder"]

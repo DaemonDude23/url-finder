@@ -63,6 +63,7 @@ func processFile(filePath string) [][]string {
 	var results [][]string
 
 	// Open the file
+	// #nosec G304 -- The user explicitly selects local files to scan.
 	file, err := os.Open(filePath)
 	if err != nil {
 		log.Info("Error opening file:", err)
@@ -72,6 +73,8 @@ func processFile(filePath string) [][]string {
 
 	// Read the file line by line
 	scanner := bufio.NewScanner(file)
+	// HTML and generated manifests commonly contain lines larger than 64 KiB.
+	scanner.Buffer(make([]byte, 64*1024), 4*1024*1024)
 	lineNumber := 0
 	for scanner.Scan() {
 		lineNumber++
