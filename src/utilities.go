@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	_ "embed"
 	"fmt"
 	"net"
 	"net/http"
@@ -9,14 +11,27 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/schollz/progressbar/v3"
 )
 
+//go:embed VERSION
+var sourceVersion string
+
+// Set by release builds; local builds use the checked-in source version.
+var version string
+
+const requestTimeout = 30 * time.Second
+
 // Version returns the version of the CLI application
 func (CLIArgs) Version() string {
-	return "url-finder 0.1.0"
+	v := version
+	if v == "" {
+		v = strings.TrimSpace(sourceVersion)
+	}
+	return "url-finder " + v
 }
 
 // isURL checks if the given path is a valid URL
@@ -29,7 +44,7 @@ func isURL(path string) bool {
 	if parsedURL.Scheme != "http" && parsedURL.Scheme != "https" {
 		return false
 	}
-	return parsedURL.Host != ""
+	return parsedURL.Hostname() != ""
 }
 
 // isDirectory checks if the given path is a directory
@@ -58,7 +73,7 @@ func extractURLs(content string) []string {
 }
 
 // displayResults prints the results in a tabular format
-func displayResults(results [][]string, noQuery bool, showAll bool) {
+func filterResults(results [][]string, noQuery bool, showAll bool) [][]string {
 	if !showAll && !noQuery {
 		var filtered [][]string
 		for _, row := range results {
@@ -78,6 +93,13 @@ func displayResults(results [][]string, noQuery bool, showAll bool) {
 		}
 		results = filtered
 	}
+
+	return results
+}
+
+// displayResults prints the actual filtered rows.
+func displayResults(results [][]string, noQuery bool, showAll bool) {
+	results = filterResults(results, noQuery, showAll)
 
 	if noQuery {
 		table := tablewriter.NewWriter(os.Stdout)
@@ -105,13 +127,22 @@ func displayResults(results [][]string, noQuery bool, showAll bool) {
 // getURLStatus retrieves the IP address, status code chain, potential redirect location
 // for the given URL.
 func getURLStatus(rawURL string) (string, string, string) {
+	return getURLStatusWithClient(rawURL, &http.Client{Timeout: requestTimeout})
+}
+
+func getURLStatusWithClient(rawURL string, baseClient *http.Client) (string, string, string) {
+	if !isURL(rawURL) {
+		return "", "", ""
+	}
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
 		return "", "", ""
 	}
 
 	// Lookup IP address
-	ips, err := net.LookupIP(parsedURL.Hostname())
+	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
+	defer cancel()
+	ips, err := net.DefaultResolver.LookupIP(ctx, "ip", parsedURL.Hostname())
 	if err != nil || len(ips) == 0 {
 		return "", "", ""
 	}
@@ -120,26 +151,19 @@ func getURLStatus(rawURL string) (string, string, string) {
 	// Keep track of all intermediate status codes in case of redirects
 	var statusChain []string
 
-	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			// For each redirect, capture the *previous* response code
-			// (the last element in via is the previous request).
-			if len(via) > 0 {
-				prevResp := via[len(via)-1].Response
-				if prevResp != nil {
-					code := prevResp.StatusCode
-					statusChain = append(statusChain, fmt.Sprintf("%d", code))
-				}
-			}
-
-			// Avoid following more than one redirect
-			if len(via) >= 2 {
-				return http.ErrUseLastResponse
-			}
-			return nil
-		},
+	client := *baseClient
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		// The new request carries the response that caused this redirect.
+		if req.Response != nil && len(via) < 2 {
+			statusChain = append(statusChain, fmt.Sprintf("%d", req.Response.StatusCode))
+		}
+		if len(via) >= 2 {
+			return http.ErrUseLastResponse
+		}
+		return nil
 	}
 
+	// #nosec G704 -- Probing user-selected URLs is the purpose of this CLI.
 	resp, err := client.Get(rawURL)
 	if err != nil {
 		return ip, "", ""
@@ -165,6 +189,9 @@ func getURLStatus(rawURL string) (string, string, string) {
 
 // accessURLs processes the extracted URLs
 func accessURLs(results [][]string, concurrency int) [][]string {
+	if concurrency < 1 {
+		concurrency = 1
+	}
 	var extractedURLs []string
 	for _, result := range results {
 		extractedURLs = append(extractedURLs, result[2])

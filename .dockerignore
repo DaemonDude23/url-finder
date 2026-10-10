@@ -1,0 +1,6 @@
+.git
+.go
+**/.go
+dist
+build
+**/__pycache__
