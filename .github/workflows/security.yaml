@@ -92,9 +92,9 @@ jobs:
             -v "$RUNNER_TEMP/trivy-cache:/cache" \
             -e TRIVY_CACHE_DIR=/cache \
             "${TRIVY_IMAGE}" \
-            fs --scanners vuln,secret,misconfig \
+            fs --scanners vuln,secret,misconfig --file-patterns 'dockerfile:Dockerfile-dev' \
                --severity HIGH,CRITICAL --ignore-unfixed \
-               --skip-dirs .trivycache --exit-code 1 .
+               --skip-dirs .git,dist,.trivycache --exit-code 1 .
 
   dependency-review:
     name: Dependency review
