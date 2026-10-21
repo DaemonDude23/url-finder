@@ -83,7 +83,7 @@ url-finder https://blog.andrewaadland.me/
 
 ## Development and maintenance
 
-Use Go 1.26.9 or newer. From the repository root:
+Use Go 1.27.3 or newer. From the repository root:
 
 ```bash
 go -C src test -race -cover ./...
