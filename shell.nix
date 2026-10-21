@@ -5,7 +5,7 @@
 pkgs.mkShell {
   buildInputs = [
     pkgs.delve  # go debugging
-    pkgs.go_1_26
+    pkgs.go_1_27
     pkgs.python314  # pre-commit hooks
   ];
 
