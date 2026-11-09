@@ -87,7 +87,7 @@ jobs:
         if: steps.scope.outputs.workflow == 'true'
         uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7
         with:
-          version: v2.18.3
+          version: v2.20.0
           args: check
       - name: Docker image builds
         if: steps.scope.outputs.docker == 'true'

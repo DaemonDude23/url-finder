@@ -76,9 +76,9 @@ jobs:
       # renovate: datasource=go depName=golang.org/x/vuln
       GOVULNCHECK_VERSION: v1.9.0
       # renovate: datasource=github-releases depName=goreleaser/goreleaser
-      GORELEASER_VERSION: v2.18.3
+      GORELEASER_VERSION: v2.20.0
       # renovate: datasource=docker depName=docker.io/aquasec/trivy
-      TRIVY_IMAGE: docker.io/aquasec/trivy:0.75.0@sha256:af6acf9a6b85dfe389a1941505c0ce9efef52a4719635e1a962f022a3d855daa
+      TRIVY_IMAGE: docker.io/aquasec/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -133,7 +133,7 @@ jobs:
           version: ${{ env.GORELEASER_VERSION }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
