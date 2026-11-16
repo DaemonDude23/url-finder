@@ -1,5 +1,5 @@
 # Builder stage
-FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.27.3@sha256:e519d3b0a5b285e5aa53ab9eef02bc6bbb9cb04608389b743a136a9ce75f0d1e AS builder
+FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.27.4@sha256:fe517acaa580cc7915457080f850c37e618b3c1e750f98b58fc6429b605147a1 AS builder
 ARG TARGETOS
 ARG TARGETARCH
 ARG VERSION=dev
